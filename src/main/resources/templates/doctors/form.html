@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/main :: layout(~{::title}, ~{::section})}">
+<head>
+    <title th:text="${doctor.id == null ? 'Nuevo Doctor' : 'Editar Doctor'} + ' - Hospital'"></title>
+</head>
+<body>
+    <section>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 th:text="${doctor.id == null ? 'Nuevo Doctor' : 'Editar Doctor'}"></h2>
+            <a href="/doctors" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Volver
+            </a>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <form th:action="${doctor.id == null ? '/doctors' : '/doctors/' + doctor.id}" 
+                      th:object="${doctor}" method="post">
+                    
+                    <div class="mb-3">
+                        <label for="firstName" class="form-label">Nombre *</label>
+                        <input type="text" class="form-control" id="firstName" th:field="*{firstName}" required>
+                        <div class="text-danger" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="lastName" class="form-label">Apellido Paterno *</label>
+                        <input type="text" class="form-control" id="lastName" th:field="*{lastName}" required>
+                        <div class="text-danger" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="maternalLastName" class="form-label">Apellido Materno</label>
+                        <input type="text" class="form-control" id="maternalLastName" th:field="*{maternalLastName}">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="specialty" class="form-label">Especialidad *</label>
+                        <input type="text" class="form-control" id="specialty" th:field="*{specialty}" required>
+                        <div class="text-danger" th:if="${#fields.hasErrors('specialty')}" th:errors="*{specialty}"></div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save"></i> Guardar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/main :: layout(~{::title}, ~{::section})}">
+<head>
+    <title>Consultorios - Hospital</title>
+</head>
+<body>
+    <section>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Consultorios</h2>
+            <a href="/rooms/new" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Nuevo Consultorio
+            </a>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <div th:if="${#lists.isEmpty(rooms)}" class="alert alert-info">
+                    No hay consultorios registrados.
+                </div>
+                
+                <div th:unless="${#lists.isEmpty(rooms)}" class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Número de Consultorio</th>
+                                <th>Piso</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="room : ${rooms}">
+                                <td th:text="${room.id}"></td>
+                                <td th:text="${room.roomNumber}"></td>
+                                <td th:text="${room.floor}"></td>
+                                <td>
+                                    <a th:href="@{/rooms/{id}/edit(id=${room.id})}" class="btn btn-sm btn-warning">
+                                        <i class="bi bi-pencil"></i> Editar
+                                    </a>
+                                    <a th:href="@{/rooms/{id}/delete(id=${room.id})}" class="btn btn-sm btn-danger"
+                                       onclick="return confirm('¿Estás seguro de eliminar este consultorio?')">
+                                        <i class="bi bi-trash"></i> Eliminar
+                                    </a>
+                                    <a th:href="@{/appointments(roomId=${room.id})}" class="btn btn-sm btn-info">
+                                        <i class="bi bi-calendar-check"></i> Ver Citas
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

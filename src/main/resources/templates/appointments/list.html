@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/main :: layout(~{::title}, ~{::section})}">
+<head>
+    <title>Citas - Hospital</title>
+</head>
+<body>
+    <section>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Citas</h2>
+            <a href="/appointments/new" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Nueva Cita
+            </a>
+        </div>
+
+        <!-- Search Form -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Filtros de Búsqueda</h5>
+            </div>
+            <div class="card-body">
+                <form action="/appointments" method="get" class="row g-3">
+                    <div class="col-md-4">
+                        <label for="date" class="form-label">Fecha</label>
+                        <input type="date" class="form-control" id="date" name="date" th:value="${selectedDate}">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="doctorId" class="form-label">Doctor</label>
+                        <select class="form-select" id="doctorId" name="doctorId">
+                            <option value="">-- Todos los doctores --</option>
+                            <option th:each="doctor : ${doctors}" 
+                                    th:value="${doctor.id}" 
+                                    th:text="${doctor.firstName + ' ' + doctor.lastName}"
+                                    th:selected="${selectedDoctor != null && selectedDoctor.id == doctor.id}"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="roomId" class="form-label">Consultorio</label>
+                        <select class="form-select" id="roomId" name="roomId">
+                            <option value="">-- Todos los consultorios --</option>
+                            <option th:each="room : ${rooms}" 
+                                    th:value="${room.id}" 
+                                    th:text="${'Consultorio ' + room.roomNumber + ' (Piso ' + room.floor + ')'}"
+                                    th:selected="${selectedRoom != null && selectedRoom.id == room.id}"></option>
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-search"></i> Buscar
+                        </button>
+                        <a href="/appointments" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> Limpiar Filtros
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Results -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    Citas para el día <span th:text="${#temporals.format(selectedDate, 'dd/MM/yyyy')}"></span>
+                    <span th:if="${selectedDoctor != null}" th:text="' - Dr. ' + ${selectedDoctor.firstName + ' ' + selectedDoctor.lastName}"></span>
+                    <span th:if="${selectedRoom != null}" th:text="' - Consultorio ' + ${selectedRoom.roomNumber}"></span>
+                </h5>
+            </div>
+            <div class="card-body">
+                <div th:if="${#lists.isEmpty(appointments)}" class="alert alert-info">
+                    No hay citas para los criterios seleccionados.
+                </div>
+                
+                <div th:unless="${#lists.isEmpty(appointments)}" class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Hora</th>
+                                <th>Paciente</th>
+                                <th>Doctor</th>
+                                <th>Consultorio</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="appointment : ${appointments}">
+                                <td th:text="${#temporals.format(appointment.appointmentDateTime, 'HH:mm')}"></td>
+                                <td th:text="${appointment.patientName}"></td>
+                                <td th:text="${appointment.doctor.firstName + ' ' + appointment.doctor.lastName}"></td>
+                                <td th:text="${'Consultorio ' + appointment.consultationRoom.roomNumber + ' (Piso ' + appointment.consultationRoom.floor + ')'}"></td>
+                                <td>
+                                    <span th:if="${appointment.cancelled}" class="badge bg-danger">Cancelada</span>
+                                    <span th:unless="${appointment.cancelled}" class="badge bg-success">Activa</span>
+                                </td>
+                                <td>
+                                    <a th:if="${!appointment.cancelled}" th:href="@{/appointments/{id}/edit(id=${appointment.id})}" class="btn btn-sm btn-warning">
+                                        <i class="bi bi-pencil"></i> Editar
+                                    </a>
+                                    <a th:if="${!appointment.cancelled}" th:href="@{/appointments/{id}/cancel(id=${appointment.id})}" class="btn btn-sm btn-danger"
+                                       onclick="return confirm('¿Estás seguro de cancelar esta cita?')">
+                                        <i class="bi bi-x-circle"></i> Cancelar
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
