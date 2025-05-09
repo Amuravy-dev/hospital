@@ -20,23 +20,16 @@ Este proyecto es una aplicación web desarrollada con Spring Boot para gestionar
 
 ## Configuración y ejecución
 
-### 1. Clonar el repositorio
+### 1. Iniciar la base de datos PostgreSQL con Docker
 
 ```bash
-git clone <url-del-repositorio>
-cd hospital
+  docker-compose up -d
 ```
 
-### 2. Iniciar la base de datos PostgreSQL con Docker
+### 2. Compilar y ejecutar la aplicación
 
 ```bash
-docker-compose up -d
-```
-
-### 3. Compilar y ejecutar la aplicación
-
-```bash
-./gradlew bootRun
+  ./gradlew bootRun
 ```
 
 La aplicación estará disponible en: http://localhost:8080
